@@ -8,6 +8,7 @@ export const THEMES = [
   { id: 'sunset', label: 'Sunset', blurb: 'Warm orange & terracotta', sample: ['#dd7226', '#ad6f55'] },
   { id: 'ocean', label: 'Ocean', blurb: 'Calm blues & teals', sample: ['#3c8ac2', '#4f68b7'] },
   { id: 'forest', label: 'Forest', blurb: 'Deep greens & sage', sample: ['#4f8c57', '#507d68'] },
+  { id: 'joa', label: 'Joa', blurb: 'Vibrant mustard, purple & snot-green', sample: ['#ddb513', '#8c2f9e'] },
 ]
 
 export const themeInfo = (id) => THEMES.find(t => t.id === id) || THEMES[0]

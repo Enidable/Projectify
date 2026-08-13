@@ -72,7 +72,7 @@ export default function Timeline() {
                   <p className="text-[10px] text-lav-700/40">{fmtShort(p.startDate)} → {fmtShort(p.endDate)}</p>
                 </div>
                 <div className="flex-1 relative h-6 bg-lav-50 rounded">
-                  <div className={`absolute top-0 bottom-0 rounded ${c.dot}`} style={{ left: `${left}%`, width: `${width}%` }} />
+                  <div className="absolute top-0 bottom-0 rounded" style={{ backgroundColor: c.hex, left: `${left}%`, width: `${width}%` }} />
                 </div>
               </div>
             ))}

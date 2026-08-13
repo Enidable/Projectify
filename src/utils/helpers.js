@@ -1,25 +1,16 @@
 // ---- Colors ---------------------------------------------------------------
-const colorVariants = {
-  lav: { bg: 'bg-lav-100', text: 'text-lav-700', dot: 'bg-lav-500', solid: 'bg-lav-500' },
-  mauve: { bg: 'bg-mauve-100', text: 'text-mauve-700', dot: 'bg-mauve-500', solid: 'bg-mauve-500' },
-  sage: { bg: 'bg-sage-100', text: 'text-sage-700', dot: 'bg-sage-500', solid: 'bg-sage-500' },
-  blush: { bg: 'bg-blush-100', text: 'text-blush-700', dot: 'bg-blush-500', solid: 'bg-blush-500' },
-  peach: { bg: 'bg-peach-100', text: 'text-peach-700', dot: 'bg-peach-500', solid: 'bg-peach-500' },
-  lilac: { bg: 'bg-lilac-100', text: 'text-lilac-700', dot: 'bg-lilac-500', solid: 'bg-lilac-500' },
-  peri: { bg: 'bg-peri-100', text: 'text-peri-700', dot: 'bg-peri-500', solid: 'bg-peri-500' },
-  olive: { bg: 'bg-olive-100', text: 'text-olive-700', dot: 'bg-olive-500', solid: 'bg-olive-500' },
-  clay: { bg: 'bg-clay-100', text: 'text-clay-700', dot: 'bg-clay-500', solid: 'bg-clay-500' },
-  slate: { bg: 'bg-slate-100', text: 'text-slate-700', dot: 'bg-slate-500', solid: 'bg-slate-500' },
-  indigo: { bg: 'bg-indigo-100', text: 'text-indigo-700', dot: 'bg-indigo-500', solid: 'bg-indigo-500' },
-  teal: { bg: 'bg-teal-100', text: 'text-teal-700', dot: 'bg-teal-500', solid: 'bg-teal-500' },
-  amber: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-500', solid: 'bg-amber-500' },
-  rose: { bg: 'bg-rose-100', text: 'text-rose-700', dot: 'bg-rose-500', solid: 'bg-rose-500' },
-  sky: { bg: 'bg-sky-100', text: 'text-sky-700', dot: 'bg-sky-500', solid: 'bg-sky-500' },
-  emerald: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-500', solid: 'bg-emerald-500' },
+// Named palettes (used before the color wheel) resolve to their 500-shade hex.
+// Arbitrary hex colors pass straight through, so any <input type="color"> value works.
+const colorHex = {
+  lav: '#8d7cbd', mauve: '#996780', sage: '#6d916f', blush: '#b8717e',
+  peach: '#bc6f55', lilac: '#7b7bb4', peri: '#747fc8', olive: '#8f8f49',
+  clay: '#927856', slate: '#6b7280', indigo: '#4f64c0', teal: '#2d948c',
+  amber: '#d9851d', rose: '#d64a63', sky: '#368cbc', emerald: '#36924d',
 }
 
 export function projectColor(color) {
-  return colorVariants[color] || colorVariants.slate
+  const hex = color && color.startsWith('#') ? color : (colorHex[color] || colorHex.slate)
+  return { hex, dot: hex, solid: hex, bg: hex, text: hex }
 }
 
 // ---- Gamification ----------------------------------------------------------

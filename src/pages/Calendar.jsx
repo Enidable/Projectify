@@ -90,7 +90,7 @@ function DayCard({ date, isToday, onAdd, onSettings }) {
             const proj = state.projects.find(p => p.id === b.projectId)
             const c = proj ? projectColor(proj.color) : null
             return (
-              <div key={b.id} className="group flex items-center gap-2 text-xs border border-blush-50 border-l-2 rounded px-2 py-1.5" style={{ borderLeftColor: c?.dot.replace('bg-', '') ? undefined : undefined }}>
+              <div key={b.id} className="group flex items-center gap-2 text-xs border border-blush-50 rounded px-2 py-1.5" style={{ borderLeftColor: c ? c.hex : undefined, borderLeftWidth: c ? 3 : 0 }}>
                 <div className={`border-l-2 ${f.border} pl-1`}>
                   <button onClick={() => toggleBlockDone(date, b.id)} className={`flex items-center justify-center w-4 h-4 rounded border-2 text-[9px] cursor-pointer ${b.done ? 'bg-sage-500 border-sage-500 text-white' : 'border-lav-300 text-transparent hover:border-lav-500'}`}>✓</button>
                 </div>

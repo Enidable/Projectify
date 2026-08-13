@@ -52,7 +52,7 @@ export default function Projects() {
               {p.goal && <p className="text-xs text-lav-700/50 mt-1 mb-2">🎯 {p.goal}</p>}
 
               <div className="h-2 bg-lav-100 rounded-full overflow-hidden mb-3">
-                <div className={`h-full rounded-full transition-all ${c.dot}`} style={{ width: `${pct}%` }} />
+                <div className="h-full rounded-full transition-all" style={{ backgroundColor: c.hex, width: `${pct}%` }} />
               </div>
 
               <div className="space-y-1.5 flex-1">
@@ -119,11 +119,20 @@ function ProjectModal({ open, onClose, initial, onSubmit, title }) {
           </div>
           <div>
             <label className={labelCls}>Color</label>
-            <div className="flex items-center gap-1.5 flex-wrap pt-1">
-              {COLORS.map(col => (
-                <button key={col} type="button" onClick={() => setForm(f => ({ ...f, color: col }))}
-                  className={`w-6 h-6 rounded-full cursor-pointer ${projectColor(col).solid} ${form.color === col ? 'ring-2 ring-offset-1 ring-lav-700' : ''}`} />
-              ))}
+            <div className="flex items-center gap-3 pt-1">
+              <input
+                type="color"
+                value={projectColor(form.color).hex}
+                onChange={e => setForm(f => ({ ...f, color: e.target.value }))}
+                className="w-10 h-10 rounded-lg cursor-pointer border border-blush-200 bg-white p-0.5"
+              />
+              <div className="flex gap-1.5 flex-wrap">
+                {COLORS.map(col => (
+                  <button key={col} type="button" onClick={() => setForm(f => ({ ...f, color: col }))}
+                    className={`w-6 h-6 rounded-full cursor-pointer ${projectColor(col).hex === projectColor(form.color).hex ? 'ring-2 ring-offset-1 ring-lav-700' : ''}`}
+                    style={{ backgroundColor: projectColor(col).hex }} title={col} />
+                ))}
+              </div>
             </div>
           </div>
         </div>

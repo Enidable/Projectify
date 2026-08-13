@@ -54,7 +54,7 @@ export default function Dashboard() {
                       <span className="text-xs text-lav-700/50 shrink-0">{pr.done}/{pr.total}</span>
                     </div>
                     <div className="h-2 bg-lav-100 rounded-full overflow-hidden">
-                      <div className={`h-full rounded-full transition-all ${c.dot}`} style={{ width: `${pct}%` }} />
+                      <div className="h-full rounded-full transition-all" style={{ backgroundColor: c.hex, width: `${pct}%` }} />
                     </div>
                   </div>
                 )
@@ -74,7 +74,7 @@ export default function Dashboard() {
                 const c = proj ? projectColor(proj.color) : null
                 return (
                   <div key={b.id} className="flex items-center gap-2 text-sm">
-                    <span className={`w-2 h-2 rounded-full shrink-0 ${c ? c.dot : 'bg-lav-300'}`} />
+                    <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: c ? c.hex : '#8d7cbd' }} />
                     <span className="text-xs font-mono text-lav-700/40 w-9">{b.time}</span>
                     <span className={`flex-1 truncate ${b.done ? 'line-through text-lav-700/40' : 'text-lav-900'}`}>{b.label}</span>
                     {proj && <span className="text-xs shrink-0">{proj.icon}</span>}

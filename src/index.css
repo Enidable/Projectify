@@ -254,6 +254,41 @@
   --color-lilac-700: #425f4d;
 }
 
+:root[data-theme="joa"] {
+  --color-paper: #faf7f2;
+
+  --color-blush-50: #faf3fb;
+  --color-blush-100: #f3e3f7;
+  --color-blush-200: #e6c6f0;
+  --color-blush-300: #d69fe4;
+  --color-blush-400: #c372d6;
+  --color-blush-500: #b04ec4;
+  --color-blush-600: #9a36ac;
+  --color-blush-700: #7e2b8d;
+  --color-blush-800: #662573;
+  --color-blush-900: #55215f;
+
+  --color-lav-50: #fdf9ec;
+  --color-lav-100: #f9efc9;
+  --color-lav-200: #f3dea2;
+  --color-lav-300: #e9c86e;
+  --color-lav-400: #ddb13f;
+  --color-lav-500: #cd9a1f;
+  --color-lav-600: #a97c14;
+  --color-lav-700: #855f12;
+  --color-lav-800: #6b4c13;
+  --color-lav-900: #583f13;
+
+  --color-lilac-50: #f5fad8;
+  --color-lilac-100: #eaf2a8;
+  --color-lilac-200: #d8e76d;
+  --color-lilac-300: #c0d941;
+  --color-lilac-400: #a6c020;
+  --color-lilac-500: #8aa516;
+  --color-lilac-600: #6e8213;
+  --color-lilac-700: #576613;
+}
+
 body {
   margin: 0;
   font-family: 'Inter', system-ui, -apple-system, sans-serif;

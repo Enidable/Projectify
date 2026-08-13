@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react'
 import { useAppData } from '../context/AppDataContext'
+import Modal from './Modal'
 
 export function ImportExport() {
   const { exportState, importState, reset, loadDemo } = useAppData()
@@ -37,9 +38,7 @@ export function ImportExport() {
   }
 
   function handleReset() {
-    if (!confirmReset) { setConfirmReset(true); setTimeout(() => setConfirmReset(false), 3500); return }
-    setConfirmReset(false)
-    reset()
+    setConfirmReset(true)
   }
 
   return (
@@ -49,12 +48,22 @@ export function ImportExport() {
         <button onClick={() => fileRef.current?.click()} className="text-xs px-3 py-1.5 rounded-lg border border-blush-200 text-blush-700 hover:bg-blush-50 cursor-pointer">⬆ Import JSON</button>
         <input ref={fileRef} type="file" accept="application/json,.json" className="hidden" onChange={handleFile} />
         <button onClick={loadDemo} className="text-xs px-3 py-1.5 rounded-lg border border-blush-200 text-blush-700 hover:bg-blush-50 cursor-pointer">✦ Load example</button>
-        <button onClick={handleReset} className={`text-xs px-3 py-1.5 rounded-lg border cursor-pointer transition-colors ${confirmReset ? 'bg-blush-500 border-blush-500 text-white' : 'border-blush-200 text-blush-700 hover:bg-blush-50'}`}>
-          {confirmReset ? 'Click again to wipe' : '🗑 Wipe all'}
+        <button onClick={handleReset} className="text-xs px-3 py-1.5 rounded-lg border border-blush-200 text-blush-700 hover:bg-blush-50 cursor-pointer">
+          🗑 Wipe all
         </button>
       </div>
       {msg && <p className="text-xs text-sage-700">{msg}</p>}
       <p className="text-[11px] text-lav-700/50">Data lives in your browser. Export a JSON backup to move it between devices or share with friends.</p>
+
+      <Modal open={confirmReset} onClose={() => setConfirmReset(false)} title="Wipe all data?">
+        <div className="space-y-4">
+          <p className="text-sm text-lav-900">This permanently deletes every project, checkpoint, and planned day stored in this browser. It cannot be undone.</p>
+          <div className="flex justify-end gap-2">
+            <button type="button" onClick={() => setConfirmReset(false)} className="text-sm px-4 py-1.5 rounded-lg border border-blush-200 text-blush-700 hover:bg-blush-50 cursor-pointer">Cancel</button>
+            <button type="button" onClick={() => { setConfirmReset(false); reset() }} className="text-sm px-4 py-1.5 rounded-lg bg-blush-600 text-white hover:bg-blush-700 cursor-pointer">Yes, wipe everything</button>
+          </div>
+        </div>
+      </Modal>
     </div>
   )
 }
