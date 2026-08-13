@@ -1,6 +1,7 @@
 import { useMemo } from 'react'
 import { useAppData } from '../context/AppDataContext'
 import { levelTitle, progressToNext, computeBadges, computeStreak } from '../utils/helpers'
+import { fmtShort } from '../data/defaults'
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
 
 export default function Progress() {
@@ -19,7 +20,7 @@ export default function Progress() {
       for (const b of day.blocks || []) {
         if (b.done) xp += 4
       }
-      return { date: date.slice(5), xp }
+      return { date: fmtShort(date), xp }
     })
   }, [state.calendar])
 

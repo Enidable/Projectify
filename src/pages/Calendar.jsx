@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { useAppData } from '../context/AppDataContext'
 import Modal, { inputCls, labelCls } from '../components/Modal'
-import { FLAVORS, flavorInfo, todayStr, DEFAULT_RANGES } from '../data/defaults'
+import { FLAVORS, flavorInfo, todayStr, DEFAULT_RANGES, fmtShort } from '../data/defaults'
 import { projectColor } from '../utils/helpers'
 
 const FLAVOR_KEYS = Object.keys(FLAVORS)
@@ -153,7 +153,7 @@ function AddBlockModal({ date, onClose, onSubmit }) {
   }
 
   return (
-    <Modal open={!!date} onClose={onClose} title={date ? `Add to ${date}` : ''}>
+    <Modal open={!!date} onClose={onClose} title={date ? `Add to ${fmtShort(date)}` : ''}>
       <form onSubmit={submit} className="space-y-3">
         {state.projects.length === 0 ? (
           <p className="text-sm text-lav-700/50">Create a project first (Projects page), then come back to schedule it.</p>
@@ -219,7 +219,7 @@ function DaySettingsModal({ date, onClose }) {
   }
 
   return (
-    <Modal open={!!date} onClose={onClose} title={`Day settings — ${date}`}>
+    <Modal open={!!date} onClose={onClose} title={`Day settings — ${date ? fmtShort(date) : ''}`}>
       <form onSubmit={submit} className="space-y-3">
         <div>
           <label className={labelCls}>Note</label>

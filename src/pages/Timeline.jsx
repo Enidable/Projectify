@@ -2,6 +2,7 @@ import { useMemo } from 'react'
 import { useAppData } from '../context/AppDataContext'
 import Modal, { inputCls, labelCls } from '../components/Modal'
 import { projectColor } from '../utils/helpers'
+import { fmtShort } from '../data/defaults'
 import { useState } from 'react'
 
 function toDays(dateStr) {
@@ -68,7 +69,7 @@ export default function Timeline() {
                   <button onClick={() => setEditId(p.id)} className="text-xs text-lav-900 hover:underline truncate block w-full text-left cursor-pointer">
                     {p.icon} {p.name}
                   </button>
-                  <p className="text-[10px] text-lav-700/40">{p.startDate?.slice(5)} → {p.endDate?.slice(5)}</p>
+                  <p className="text-[10px] text-lav-700/40">{fmtShort(p.startDate)} → {fmtShort(p.endDate)}</p>
                 </div>
                 <div className="flex-1 relative h-6 bg-lav-50 rounded">
                   <div className={`absolute top-0 bottom-0 rounded ${c.dot}`} style={{ left: `${left}%`, width: `${width}%` }} />
@@ -86,7 +87,7 @@ export default function Timeline() {
           {state.projects.map(p => (
             <button key={p.id} onClick={() => setEditId(p.id)}
               className={`text-left text-xs px-3 py-2 rounded-lg border cursor-pointer hover:bg-lav-50 ${p.startDate ? 'border-blush-100' : 'border-dashed border-lav-200 text-lav-700/50'}`}>
-              {p.icon} {p.name} {p.startDate ? `· ${p.startDate.slice(5)} → ${p.endDate?.slice(5)}` : '— no dates yet'}
+              {p.icon} {p.name} {p.startDate ? `· ${fmtShort(p.startDate)} → ${fmtShort(p.endDate)}` : '— no dates yet'}
             </button>
           ))}
         </div>

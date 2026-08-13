@@ -2,17 +2,28 @@
 
 export const APP_NAME = 'Projectify'
 
-// Energy types describe how heavy a task is on cognition.
+// Color themes swap the app's accent palette (blush = primary, lav = secondary, lilac = tertiary).
+export const THEMES = [
+  { id: 'lilac', label: 'Lilac', blurb: 'Soft pink & purple', sample: ['#b8717e', '#8d7cbd'] },
+  { id: 'sunset', label: 'Sunset', blurb: 'Warm orange & terracotta', sample: ['#dd7226', '#ad6f55'] },
+  { id: 'ocean', label: 'Ocean', blurb: 'Calm blues & teals', sample: ['#3c8ac2', '#4f68b7'] },
+  { id: 'forest', label: 'Forest', blurb: 'Deep greens & sage', sample: ['#4f8c57', '#507d68'] },
+]
+
+export const themeInfo = (id) => THEMES.find(t => t.id === id) || THEMES[0]
+
+// Energy types describe how heavy a task is on cognition/body.
 export const ENERGIES = [
-  { id: 'deep', label: 'Deep · cognitive', cls: 'bg-lav-100 text-lav-700', dot: 'bg-lav-500' },
-  { id: 'light', label: 'Light · creative', cls: 'bg-lilac-100 text-lilac-700', dot: 'bg-lilac-500' },
+  { id: 'deep', label: 'Cognitively taxing', cls: 'bg-lav-100 text-lav-700', dot: 'bg-lav-500' },
+  { id: 'light', label: 'Creative', cls: 'bg-lilac-100 text-lilac-700', dot: 'bg-lilac-500' },
   { id: 'manual', label: 'Hands-on · craft', cls: 'bg-peach-100 text-peach-700', dot: 'bg-peach-500' },
+  { id: 'selfcare', label: 'Self-care · food & body', cls: 'bg-mauve-100 text-mauve-700', dot: 'bg-mauve-500' },
 ]
 
 export const energyInfo = (id) => ENERGIES.find(e => e.id === id) || ENERGIES[0]
 
 // Colors available when creating a project.
-export const COLORS = ['lav', 'mauve', 'sage', 'blush', 'peach', 'lilac', 'peri', 'olive', 'clay', 'slate']
+export const COLORS = ['lav', 'mauve', 'sage', 'blush', 'peach', 'lilac', 'peri', 'olive', 'clay', 'slate', 'indigo', 'teal', 'amber', 'rose', 'sky', 'emerald']
 
 export const ICONS = ['🌟', '🤖', '📚', '🏃', '💪', '🧵', '🪞', '🎵', '🍱', '🎲', '💼', '🧩', '✏️', '🌱', '🎨', '🏠', '🧠', '📦']
 
@@ -42,6 +53,7 @@ export const DEFAULT_RANGES = [
 
 // ---- Gamification (editable) ----------------------------------------------
 export const DEFAULT_CONFIG = {
+  theme: 'lilac',
   levelCurve: [0, 50, 120, 210, 320, 450, 600, 770, 960, 1170, 1400, 1650, 1930, 2240, 2580, 2950, 3350, 3780, 4240, 4730, 5250],
   levelTitles: [
     'Spark', 'Sparksmith', 'Kindling', 'Coal', 'Ember', 'Flame', 'Blaze', 'Inferno',
@@ -93,7 +105,18 @@ export function uid() {
 }
 
 export function todayStr() {
-  return new Date().toISOString().slice(0, 10)
+  const d = new Date()
+  const y = d.getFullYear()
+  const m = String(d.getMonth() + 1).padStart(2, '0')
+  const day = String(d.getDate()).padStart(2, '0')
+  return `${y}-${m}-${day}`
+}
+
+// Day-first (EU) short date from an internal 'YYYY-MM-DD' string, e.g. "13/08".
+export function fmtShort(dateStr) {
+  if (!dateStr) return ''
+  const [, m, d] = dateStr.split('-')
+  return `${d}/${m}`
 }
 
 export function packDate(d) {

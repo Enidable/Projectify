@@ -10,6 +10,12 @@ const colorVariants = {
   olive: { bg: 'bg-olive-100', text: 'text-olive-700', dot: 'bg-olive-500', solid: 'bg-olive-500' },
   clay: { bg: 'bg-clay-100', text: 'text-clay-700', dot: 'bg-clay-500', solid: 'bg-clay-500' },
   slate: { bg: 'bg-slate-100', text: 'text-slate-700', dot: 'bg-slate-500', solid: 'bg-slate-500' },
+  indigo: { bg: 'bg-indigo-100', text: 'text-indigo-700', dot: 'bg-indigo-500', solid: 'bg-indigo-500' },
+  teal: { bg: 'bg-teal-100', text: 'text-teal-700', dot: 'bg-teal-500', solid: 'bg-teal-500' },
+  amber: { bg: 'bg-amber-100', text: 'text-amber-700', dot: 'bg-amber-500', solid: 'bg-amber-500' },
+  rose: { bg: 'bg-rose-100', text: 'text-rose-700', dot: 'bg-rose-500', solid: 'bg-rose-500' },
+  sky: { bg: 'bg-sky-100', text: 'text-sky-700', dot: 'bg-sky-500', solid: 'bg-sky-500' },
+  emerald: { bg: 'bg-emerald-100', text: 'text-emerald-700', dot: 'bg-emerald-500', solid: 'bg-emerald-500' },
 }
 
 export function projectColor(color) {
@@ -65,10 +71,10 @@ export function computeBadges(d) {
 }
 
 // ---- Streak ----------------------------------------------------------------
-import { packDate } from '../data/defaults'
+import { packDate, todayStr } from '../data/defaults'
 
 export function computeStreak(dailyWinsByDate) {  let streak = 0
-  let d = new Date().toISOString().slice(0, 10)
+  let d = todayStr()
   while (dailyWinsByDate[d]) {
     streak++
     d = packDate(new Date(d + 'T12:00:00').getTime() - 86400000)

@@ -88,6 +88,170 @@
   --color-clay-500: #927856;
   --color-clay-600: #786046;
   --color-clay-700: #624e3a;
+
+  --color-indigo-50: #eef1fb;
+  --color-indigo-100: #dde3f7;
+  --color-indigo-200: #bcc7ee;
+  --color-indigo-300: #93a5e2;
+  --color-indigo-400: #6c80d2;
+  --color-indigo-500: #4f64c0;
+  --color-indigo-600: #4252a3;
+  --color-indigo-700: #394585;
+
+  --color-teal-50: #eaf8f6;
+  --color-teal-100: #d4f0ed;
+  --color-teal-200: #a8e1db;
+  --color-teal-300: #73cbc3;
+  --color-teal-400: #45b0a7;
+  --color-teal-500: #2d948c;
+  --color-teal-600: #267a74;
+  --color-teal-700: #22625e;
+
+  --color-amber-50: #fdf7ec;
+  --color-amber-100: #faecd0;
+  --color-amber-200: #f5d9a0;
+  --color-amber-300: #eebe67;
+  --color-amber-400: #e6a038;
+  --color-amber-500: #d9851d;
+  --color-amber-600: #b96b16;
+  --color-amber-700: #955516;
+
+  --color-rose-50: #fdf0f2;
+  --color-rose-100: #fbe0e4;
+  --color-rose-200: #f6c1ca;
+  --color-rose-300: #ef98a7;
+  --color-rose-400: #e56c81;
+  --color-rose-500: #d64a63;
+  --color-rose-600: #b93950;
+  --color-rose-700: #993044;
+
+  --color-sky-50: #eef7fb;
+  --color-sky-100: #dceef7;
+  --color-sky-200: #b9deef;
+  --color-sky-300: #8cc5e3;
+  --color-sky-400: #57a7d1;
+  --color-sky-500: #368cbc;
+  --color-sky-600: #2c719a;
+  --color-sky-700: #285c7d;
+
+  --color-emerald-50: #edf7f0;
+  --color-emerald-100: #d9efdd;
+  --color-emerald-200: #b4dfbe;
+  --color-emerald-300: #85c795;
+  --color-emerald-400: #55ab6b;
+  --color-emerald-500: #36924d;
+  --color-emerald-600: #2a773e;
+  --color-emerald-700: #245f35;
+}
+
+/* ---- Theme overrides -------------------------------------------------------
+   Each theme re-skins the app by swapping the accent ramps (blush/lav/lilac)
+   plus the page background. Utilities reference var(--color-*) so overriding
+   these variables colours everything. */
+
+:root[data-theme="sunset"] {
+  --color-paper: #faf4ee;
+
+  --color-blush-50: #fdf5ee;
+  --color-blush-100: #fbe8d8;
+  --color-blush-200: #f6d2b0;
+  --color-blush-300: #efb27f;
+  --color-blush-400: #e78d4c;
+  --color-blush-500: #dd7226;
+  --color-blush-600: #bf5a1c;
+  --color-blush-700: #9c481c;
+  --color-blush-800: #7d3a1b;
+  --color-blush-900: #65301a;
+
+  --color-lav-50: #faf5f0;
+  --color-lav-100: #f2e6da;
+  --color-lav-200: #e5cdb8;
+  --color-lav-300: #d3ab92;
+  --color-lav-400: #c1876c;
+  --color-lav-500: #ad6d52;
+  --color-lav-600: #925642;
+  --color-lav-700: #784536;
+  --color-lav-800: #60382d;
+  --color-lav-900: #4f2f27;
+
+  --color-lilac-50: #fdf8f3;
+  --color-lilac-100: #f8ecdf;
+  --color-lilac-200: #f0d9c0;
+  --color-lilac-300: #e6c09a;
+  --color-lilac-400: #d9a477;
+  --color-lilac-500: #cb8a5c;
+  --color-lilac-600: #aa6f46;
+  --color-lilac-700: #8c5a3a;
+}
+
+:root[data-theme="ocean"] {
+  --color-paper: #f1f5fa;
+
+  --color-blush-50: #eef6fc;
+  --color-blush-100: #d9ebf7;
+  --color-blush-200: #b6d8ef;
+  --color-blush-300: #8bbfe3;
+  --color-blush-400: #5fa2d4;
+  --color-blush-500: #3f8ac4;
+  --color-blush-600: #3371ab;
+  --color-blush-700: #2d5d8b;
+  --color-blush-800: #284e72;
+  --color-blush-900: #23415e;
+
+  --color-lav-50: #eef2fa;
+  --color-lav-100: #dce5f5;
+  --color-lav-200: #baccea;
+  --color-lav-300: #92abdb;
+  --color-lav-400: #6c89c8;
+  --color-lav-500: #506fb2;
+  --color-lav-600: #445a97;
+  --color-lav-700: #3b4c7b;
+  --color-lav-800: #333f64;
+  --color-lav-900: #2b3650;
+
+  --color-lilac-50: #f2f5fb;
+  --color-lilac-100: #e4ebf7;
+  --color-lilac-200: #cbd7ef;
+  --color-lilac-300: #a9bce3;
+  --color-lilac-400: #899fd4;
+  --color-lilac-500: #6f85c2;
+  --color-lilac-600: #5b6ca1;
+  --color-lilac-700: #4b5983;
+}
+
+:root[data-theme="forest"] {
+  --color-paper: #f1f6f1;
+
+  --color-blush-50: #edf7ef;
+  --color-blush-100: #d9eddd;
+  --color-blush-200: #b4dcbd;
+  --color-blush-300: #8ac498;
+  --color-blush-400: #60a873;
+  --color-blush-500: #45905b;
+  --color-blush-600: #377349;
+  --color-blush-700: #2f5d3d;
+  --color-blush-800: #2a4d34;
+  --color-blush-900: #243f2d;
+
+  --color-lav-50: #eef5ef;
+  --color-lav-100: #dceade;
+  --color-lav-200: #b9d5be;
+  --color-lav-300: #90b99a;
+  --color-lav-400: #6b9b76;
+  --color-lav-500: #51825c;
+  --color-lav-600: #42694c;
+  --color-lav-700: #38553f;
+  --color-lav-800: #304736;
+  --color-lav-900: #293b2e;
+
+  --color-lilac-50: #f1f7f2;
+  --color-lilac-100: #e2efe5;
+  --color-lilac-200: #c6dfce;
+  --color-lilac-300: #a3c7ae;
+  --color-lilac-400: #80ab8e;
+  --color-lilac-500: #629172;
+  --color-lilac-600: #4f755c;
+  --color-lilac-700: #425f4d;
 }
 
 body {

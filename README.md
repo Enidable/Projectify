@@ -6,10 +6,10 @@ A customizable, gamified planner for projects, milestones, and days — built fo
 
 ## Features
 
-- **Projects** — add, edit, delete. Each project has an icon, color, energy type (deep / light / hands-on), a goal, and optional start + target dates.
-- **Checkpoints (milestones)** — add/edit/delete checkpoints per project, each with an estimated-hours field. Tick them off for progress + XP.
+- **Projects** — add, edit, delete. Each project has an icon, color, energy type (cognitively taxing / creative / hands-on / self-care), a goal, and optional start + target dates.
 - **Planner (Calendar)** — add days, set your free time ranges per day, add a note, then schedule work blocks by picking a project + checkpoint + time + type. No code needed.
-- **Timeline** — give projects start/target dates and see them as a shared visual timeline.
+- **Timeline** — give projects start/target dates and see them as a shared visual timeline (day-first, EU dates).
+- **Themes** — **☰ Menu → Theme**: pick Lilac (pink/purple), Sunset (warm orange), Ocean (blues), or Forest (greens). Saved in your config.
 - **Gamification** — XP, levels, badges, and a day streak keep the momentum going.
 - **Portable data** — everything lives in your browser (localStorage). Use **☰ Menu → Export backup** to download a JSON you can keep, restore, or share with a friend (they import it on their side).
 

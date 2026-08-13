@@ -33,6 +33,15 @@ export function AppDataProvider({ children }) {
     try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)) } catch {}
   }, [state])
 
+  useEffect(() => {
+    document.documentElement.dataset.theme = state.config.theme || 'lilac'
+  }, [state.config.theme])
+
+  // ---- Config --------------------------------------------------------------
+  const setTheme = useCallback((theme) => {
+    setState(prev => ({ ...prev, config: { ...prev.config, theme } }))
+  }, [])
+
   // ---- Projects ------------------------------------------------------------
   const addProject = useCallback((p) => {
     setState(prev => ({ ...prev, projects: [{ ...p, id: uid(), milestones: [] }, ...prev.projects] }))
@@ -209,7 +218,7 @@ export function AppDataProvider({ children }) {
   }, [state])
 
   const value = {
-    state, derived,
+    state, derived, setTheme,
     addProject, updateProject, deleteProject,
     addMilestone, updateMilestone, deleteMilestone,
     upsertDay, deleteDay, addBlock, deleteBlock, toggleBlockDone,
