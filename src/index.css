@@ -150,29 +150,29 @@
    these variables colours everything. */
 
 :root[data-theme="cute vibe"] {
-  --color-paper: #f7f0f7;
+  --color-paper: #f1e5ed;
 
-  /* Blush - Bright pink */
+  /* BLUSH = Pink */
   --color-blush-50: #fdf4f8;
   --color-blush-100: #fce4ed;
   --color-blush-200: #f8c8db;
   --color-blush-300: #f2a0bf;
   --color-blush-400: #e878a0;
-  --color-blush-500: #d85480;  /* Vibrant pink */
+  --color-blush-500: #d85480;  /* Vibrant pink - PRIMARY */
   --color-blush-600: #b83d65;
   --color-blush-700: #962f51;
 
-  /* Lav - Bright purple */
+  /* LAV = Purple (now secondary accent) */
   --color-lav-50: #f5f0fe;
   --color-lav-100: #eadefe;
   --color-lav-200: #d5bdfa;
   --color-lav-300: #b892f5;
   --color-lav-400: #9a68ed;
-  --color-lav-500: #7b47de;  /* Vibrant purple */
+  --color-lav-500: #7b47de;  /* Vibrant purple - SECONDARY */
   --color-lav-600: #6237c0;
   --color-lav-700: #4d2b9a;
 
-  /* Lilac - Medium purple */
+  /* LILAC = Keep as medium purple (tertiary) */
   --color-lilac-50: #f5f3fe;
   --color-lilac-100: #e9e5fd;
   --color-lilac-200: #d3ccfa;
@@ -184,7 +184,7 @@
 }
 
 :root[data-theme="sunset"] {
-  --color-paper: #ffd8f0; /* Warmer, slightly darker paper */
+  --color-paper: #ffefea; /* Warmer, slightly darker paper */
 
   /* Blush - Warm pink/peach tones */
   --color-blush-50: #fef5f0;
@@ -222,7 +222,7 @@
 }
 
 :root[data-theme="ocean"] {
-  --color-paper: #ccfff0;
+  --color-paper: #e8fff8;
 
   /* Blush - Vibrant turquoise/teal */
   --color-blush-50: #e7f7fc;
@@ -298,7 +298,7 @@
 }
 
 :root[data-theme="joa"] {
-  --color-paper: #f6f7c4;
+  --color-paper: #f9fad8;
 
   /* Purple / Blush Scale (Anchored around #82009c) */
   --color-purple-50:  #fbf3fc;
