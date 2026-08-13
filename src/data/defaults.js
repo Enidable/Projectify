@@ -4,11 +4,11 @@ export const APP_NAME = 'Projectify'
 
 // Color themes swap the app's accent palette (blush = primary, lav = secondary, lilac = tertiary).
 export const THEMES = [
-  { id: 'lilac', label: 'Lilac', blurb: 'Soft pink & purple', sample: ['#b8717e', '#8d7cbd'] },
-  { id: 'sunset', label: 'Sunset', blurb: 'Warm orange & terracotta', sample: ['#dd7226', '#ad6f55'] },
-  { id: 'ocean', label: 'Ocean', blurb: 'Calm blues & teals', sample: ['#3c8ac2', '#4f68b7'] },
-  { id: 'forest', label: 'Forest', blurb: 'Deep greens & sage', sample: ['#4f8c57', '#507d68'] },
-  { id: 'joa', label: 'Joa', blurb: 'Vibrant mustard, purple & snot-green', sample: ['#ddb513', '#8c2f9e'] },
+  { id: 'lilac', label: 'Lilac', blurb: 'Soft pink & purple', sample: ['#c95a6e', '#b29af3'] },
+  { id: 'sunset', label: 'Sunset', blurb: 'Warm orange & terracotta', sample: ['#ffb938', '#ad4b20'] },
+  { id: 'ocean', label: 'Ocean', blurb: 'Calm blues & teals', sample: ['#3f88bd', '#031f7c'] },
+  { id: 'forest', label: 'Forest', blurb: 'Deep greens & sage', sample: ['#6a8c4f', '#176641'] },
+  { id: 'joa', label: 'Joa', blurb: 'Vibrant purple & snot-green', sample: ['#93c900', '#82009c'] },
 ]
 
 export const themeInfo = (id) => THEMES.find(t => t.id === id) || THEMES[0]
@@ -48,8 +48,8 @@ export const flavorInfo = (id) => FLAVORS[id] || FLAVORS.LIGHT
 // Default time ranges for a day's available window. { start: 'HH:MM', end: 'HH:MM' }
 export const DEFAULT_RANGES = [
   { start: '08:00', end: '12:00' },
-  { start: '14:00', end: '18:00' },
-  { start: '19:00', end: '22:00' },
+  { start: '13:00', end: '18:00' },
+  { start: '19:00', end: '23:00' },
 ]
 
 // ---- Gamification (editable) ----------------------------------------------
