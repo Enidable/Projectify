@@ -153,34 +153,38 @@
   --color-paper: #f1e5ed;
 
   /* BLUSH = Pink */
-  --color-blush-50: #fdf4f8;
-  --color-blush-100: #fce4ed;
-  --color-blush-200: #f8c8db;
-  --color-blush-300: #f2a0bf;
-  --color-blush-400: #e878a0;
-  --color-blush-500: #d85480;  /* Vibrant pink - PRIMARY */
-  --color-blush-600: #b83d65;
-  --color-blush-700: #962f51;
+  --color-blush-50: #fdf2f5;
+  --color-blush-100: #fbe4e9;
+  --color-blush-200: #f7c9d2;
+  --color-blush-300: #f1a3b3;
+  --color-blush-400: #e8768d;
+  --color-blush-500: #d9536f;
+  --color-blush-600: #c0395a;  /* Vibrant pink - PRIMARY */
+  --color-blush-700: #a12b49;
+  --color-blush-800: #842238;
+  --color-blush-900: #6b1d2e;
 
-  /* LAV = Purple (now secondary accent) */
-  --color-lav-50: #f5f0fe;
-  --color-lav-100: #eadefe;
-  --color-lav-200: #d5bdfa;
-  --color-lav-300: #b892f5;
-  --color-lav-400: #9a68ed;
-  --color-lav-500: #7b47de;  /* Vibrant purple - SECONDARY */
-  --color-lav-600: #6237c0;
-  --color-lav-700: #4d2b9a;
+  /* LAV = Deep pink (sidebar/headings) - main color */
+  --color-lav-50: #fdf3f6;
+  --color-lav-100: #fbe6ec;
+  --color-lav-200: #f7cdd7;
+  --color-lav-300: #f0a7b8;
+  --color-lav-400: #e67a93;
+  --color-lav-500: #d85372;
+  --color-lav-600: #bb4056;  /* The chosen pink */
+  --color-lav-700: #9c3048;
+  --color-lav-800: #7f273b;
+  --color-lav-900: #672031;  /* Dark pink */
 
-  /* LILAC = Keep as medium purple (tertiary) */
-  --color-lilac-50: #f5f3fe;
-  --color-lilac-100: #e9e5fd;
-  --color-lilac-200: #d3ccfa;
-  --color-lilac-300: #b5aaf2;
-  --color-lilac-400: #9485e8;
-  --color-lilac-500: #7566d8;
-  --color-lilac-600: #5d4fb8;
-  --color-lilac-700: #493d96;
+  /* LILAC = soft pink-mauve (tertiary) */
+  --color-lilac-50: #fdf4f6;
+  --color-lilac-100: #fbe5ea;
+  --color-lilac-200: #f7cad5;
+  --color-lilac-300: #f0a3b6;
+  --color-lilac-400: #e68096;
+  --color-lilac-500: #d45a74;
+  --color-lilac-600: #b53a56;
+  --color-lilac-700: #972b47;
 }
 
 :root[data-theme="sunset"] {

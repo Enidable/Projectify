@@ -4,7 +4,7 @@ export const APP_NAME = 'Projectify'
 
 // Color themes swap the app's accent palette (blush = primary, lav = secondary, lilac = tertiary).
 export const THEMES = [
-  { id: 'cute vibe', label: 'Lilac', blurb: 'Soft pink & purple', sample: ['#bb4056', '#7556c9'] },
+  { id: 'cute vibe', label: 'Cute Vibe', blurb: 'Soft pink & purple', sample: ['#bb4056', '#7556c9'] },
   { id: 'sunset', label: 'Sunset', blurb: 'Warm orange & terracotta', sample: ['#ffb938', '#ad4b20'] },
   { id: 'ocean', label: 'Ocean', blurb: 'Calm blues & teals', sample: ['#5cade4', '#031f7c'] },
   { id: 'forest', label: 'Forest', blurb: 'Deep greens & sage', sample: ['#6a8c4f', '#176641'] },
@@ -26,7 +26,7 @@ export const energyInfo = (id) => ENERGIES.find(e => e.id === id) || ENERGIES[0]
 // Colors available when creating a project.
 export const COLORS = ['lav', 'mauve', 'sage', 'blush', 'peach', 'lilac', 'peri', 'olive', 'clay', 'slate', 'indigo', 'teal', 'amber', 'rose', 'sky', 'emerald']
 
-export const ICONS = ['🌟', '🤖', '📚', '🏃', '💪', '🧵', '🪞', '🎵', '🍱', '🎲', '💼', '🧩', '✏️', '🌱', '🎨', '🏠', '🧠', '📦']
+export const ICONS = ['🌟', '🤖', '📚', '🏃', '💪', '🧵', '🪞', '🎵', '🎸', '🍱', '🎲', '💼', '🧩', '✏️', '🌱', '🎨', '🏠', '🧠', '📦']
 
 // Milestone / scheduled-block flavors (what kind of work is it).
 export const FLAVORS = {
@@ -54,7 +54,7 @@ export const DEFAULT_RANGES = [
 
 // ---- Gamification (editable) ----------------------------------------------
 export const DEFAULT_CONFIG = {
-  theme: 'lilac',
+  theme: 'cute vibe',
   levelCurve: [0, 50, 120, 210, 320, 450, 600, 770, 960, 1170, 1400, 1650, 1930, 2240, 2580, 2950, 3350, 3780, 4240, 4730, 5250],
   levelTitles: [
     'Spark', 'Sparksmith', 'Kindling', 'Coal', 'Ember', 'Flame', 'Blaze', 'Inferno',
@@ -78,23 +78,69 @@ export function emptyState(config) {
 
 export function demoState() {
   const state = emptyState()
+  const today = new Date(todayStr() + 'T12:00:00')
+  const at = (offset) => packDate(new Date(today.getTime() + offset * 86400000))
+
   state.projects = [
     {
-      id: 'p1', name: 'Example: Build a study habit app', icon: '📚', color: 'lav', energy: 'deep',
-      goal: 'Ship a working MVP to share with friends',
-      startDate: '', endDate: '',
+      id: 'p1', name: 'Train for a 5K run', icon: '🏃', color: '#d9536f', energy: 'selfcare',
+      goal: 'Run 5 km without stopping, comfortably',
+      startDate: at(-12), endDate: at(18),
       milestones: [
-        { id: 'p1-m1', name: 'Wire up data layer', hours: 3, done: false },
-        { id: 'p1-m2', name: 'Build dashboard UI', hours: 4, done: false },
-        { id: 'p1-m3', name: 'Add export/import', hours: 2, done: false },
+        { id: 'p1-m1', name: 'Run 1 km without stopping', hours: 2, done: true },
+        { id: 'p1-m2', name: 'Do 5 × 200 m intervals', hours: 3, done: true },
+        { id: 'p1-m3', name: 'Run 3 km at an easy pace', hours: 4, done: false },
+        { id: 'p1-m4', name: 'Run 5 km in under 40 min', hours: 5, done: false },
+      ],
+    },
+    {
+      id: 'p2', name: 'Learn guitar', icon: '🎸', color: '#368cbc', energy: 'light',
+      goal: 'Play a full song from memory by summer',
+      startDate: at(-20), endDate: at(25),
+      milestones: [
+        { id: 'p2-m1', name: 'Learn the C major scale', hours: 3, done: true },
+        { id: 'p2-m2', name: 'Play chords: G, C, D, Em', hours: 4, done: false },
+        { id: 'p2-m3', name: 'Strum along to a song', hours: 4, done: false },
+        { id: 'p2-m4', name: 'Play a full song from memory', hours: 6, done: false },
+      ],
+    },
+    {
+      id: 'p3', name: 'Build a small web app', icon: '🤖', color: '#2d948c', energy: 'deep',
+      goal: 'Ship an MVP my friends can actually use',
+      startDate: at(-6), endDate: at(14),
+      milestones: [
+        { id: 'p3-m1', name: 'Sketch the idea & wireframe', hours: 2, done: true },
+        { id: 'p3-m2', name: 'Build the main screen', hours: 6, done: false },
+        { id: 'p3-m3', name: 'Add save / load', hours: 4, done: false },
+        { id: 'p3-m4', name: 'Deploy it online', hours: 3, done: false },
       ],
     },
   ]
-  state.calendar[todayStr()] = {
-    note: 'Get the ball rolling',
+
+  state.calendar[at(-3)] = {
+    note: 'Small wins day',
     ranges: [...DEFAULT_RANGES],
     blocks: [
-      { id: uid(), time: '09:00', flavor: 'DEEP', label: 'Wire up data layer', projectId: 'p1', milestoneId: 'p1-m1' },
+      { id: uid(), time: '09:00', flavor: 'RUN', label: '1 km easy run', projectId: 'p1', milestoneId: 'p1-m1', done: true },
+      { id: uid(), time: '14:00', flavor: 'LIGHT', label: 'C major scale drill', projectId: 'p2', milestoneId: 'p2-m1', done: true },
+      { id: uid(), time: '18:00', flavor: 'DEEP', label: 'Wireframe sketches', projectId: 'p3', milestoneId: 'p3-m1', done: true },
+    ],
+  }
+  state.calendar[at(-1)] = {
+    note: 'Morning focus, evening easy',
+    ranges: [...DEFAULT_RANGES],
+    blocks: [
+      { id: uid(), time: '08:00', flavor: 'RUN', label: '200 m intervals', projectId: 'p1', milestoneId: 'p1-m2', done: true },
+      { id: uid(), time: '17:30', flavor: 'LIGHT', label: 'Guitar practice', projectId: 'p2', milestoneId: 'p2-m1', done: true },
+    ],
+  }
+  state.calendar[todayStr()] = {
+    note: 'Keep it simple',
+    ranges: [...DEFAULT_RANGES],
+    blocks: [
+      { id: uid(), time: '09:30', flavor: 'DEEP', label: 'Build the main screen', projectId: 'p3', milestoneId: 'p3-m2', done: false },
+      { id: uid(), time: '16:00', flavor: 'RUN', label: '3 km easy pace', projectId: 'p1', milestoneId: 'p1-m3', done: false },
+      { id: uid(), time: '19:00', flavor: 'LIGHT', label: 'Chord practice', projectId: 'p2', milestoneId: 'p2-m2', done: false },
     ],
   }
   return state

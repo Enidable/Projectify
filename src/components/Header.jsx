@@ -3,7 +3,7 @@ import { ImportExport } from './ImportExport'
 import { THEMES, themeInfo } from '../data/defaults'
 import { useAppData } from '../context/AppDataContext'
 
-export default function Header({ title, subtitle, right }) {
+export default function Header({ title, subtitle, right, onShowHelp }) {
   const { state, setTheme } = useAppData()
   const [open, setOpen] = useState(false)
   const current = themeInfo(state.config.theme).id
@@ -24,6 +24,8 @@ export default function Header({ title, subtitle, right }) {
           </button>
           {open && (
             <div className="absolute right-0 top-11 w-80 bg-white rounded-xl shadow-xl border border-blush-100 p-4 z-50">
+              <button onClick={() => { setOpen(false); if (onShowHelp) onShowHelp() }} className="w-full text-left text-xs px-3 py-2 rounded-lg border border-blush-100 text-blush-700 hover:bg-blush-50 cursor-pointer mb-4">💡 How Projectify works</button>
+
               <h3 className="text-sm font-semibold text-lav-900 mb-2">Theme</h3>
               <div className="grid grid-cols-2 gap-1.5 mb-4">
                 {THEMES.map(t => {

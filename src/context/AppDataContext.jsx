@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, useEffect, useCallback } from 'react'
-import { emptyState, uid, DEFAULT_CONFIG } from '../data/defaults'
+import { emptyState, uid, DEFAULT_CONFIG, demoState } from '../data/defaults'
 import { milestoneXp, levelForXp } from '../utils/helpers'
 
 const STORAGE_KEY = 'projectify_state_v1'
@@ -18,9 +18,11 @@ function loadJSON() {
 
 function normalize(state) {
   const s = state || {}
+  const config = { ...DEFAULT_CONFIG, ...(s.config ? s.config : {}) }
+  if (config.theme === 'lilac') config.theme = 'cute vibe' // renamed theme id
   return {
     version: s.version || 1,
-    config: { ...DEFAULT_CONFIG, ...(s.config ? s.config : {}) },
+    config,
     projects: Array.isArray(s.projects) ? s.projects : [],
     calendar: s.calendar && typeof s.calendar === 'object' ? s.calendar : {},
   }
@@ -34,7 +36,7 @@ export function AppDataProvider({ children }) {
   }, [state])
 
   useEffect(() => {
-    document.documentElement.dataset.theme = state.config.theme || 'lilac'
+    document.documentElement.dataset.theme = state.config.theme || 'cute vibe'
   }, [state.config.theme])
 
   // ---- Config --------------------------------------------------------------
@@ -151,17 +153,9 @@ export function AppDataProvider({ children }) {
   }, [])
 
   const loadDemo = useCallback(() => {
-    setState((prev) => {
-      const s = emptyState(prev.config)
-      s.projects = [{
-        id: uid(), name: 'Example: Build a study habit app', icon: '📚', color: 'lav', energy: 'deep',
-        goal: 'Ship a working MVP to share with friends', startDate: '', endDate: '',
-        milestones: [
-          { id: uid(), name: 'Wire up data layer', hours: 3, done: false },
-          { id: uid(), name: 'Build dashboard UI', hours: 4, done: false },
-          { id: uid(), name: 'Add export/import', hours: 2, done: false },
-        ],
-      }]
+    setState(prev => {
+      const s = demoState()
+      s.config = { ...prev.config, ...s.config }
       return s
     })
   }, [])

@@ -54,8 +54,8 @@ export function computeBadges(d) {
   b.push({ id: 'five', name: 'On a Roll', desc: '5 milestones completed', earned: d.milestonesDone >= 5, icon: '🎯' })
   b.push({ id: 'ten', name: 'Unstoppable', desc: '10 milestones completed', earned: d.milestonesDone >= 10, icon: '⚡' })
   b.push({ id: 'twenty', name: 'Marathon Mind', desc: '20 milestones completed', earned: d.milestonesDone >= 20, icon: '🏆' })
-  b.push({ id: 'day', name: 'Day Won', desc: 'Beat your first snappy day', earned: d.daysWon >= 1, icon: '🗓️' })
-  b.push({ id: 'days', name: 'Momentum', desc: 'Win 5 days', earned: d.daysWon >= 5, icon: '🔥' })
+  b.push({ id: 'day', name: 'Day Won', desc: 'Beat your first snappy day', earned: (d.gamesWon || d.daysWon || 0) >= 1, icon: '🗓️' })
+  b.push({ id: 'days', name: 'Momentum', desc: 'Win 5 days', earned: (d.gamesWon || d.daysWon || 0) >= 5, icon: '🔥' })
   b.push({ id: 'plan', name: 'Planner', desc: 'Create your first project', earned: d.projectsCount >= 1, icon: '📋' })
   b.push({ id: 'lvl', name: 'Rising', desc: 'Reach Level 5', earned: (d.level || 1) >= 5, icon: '⭐' })
   return b
