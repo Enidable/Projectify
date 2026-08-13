@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+@theme {
+  --color-paper: #f7f4f6;
+  --color-ink: #4a3f4a;
+
+  --color-blush-50: #fbf6f7;
+  --color-blush-100: #f6e8eb;
+  --color-blush-200: #ecd3d8;
+  --color-blush-300: #dfb6bd;
+  --color-blush-400: #cd929c;
+  --color-blush-500: #b8717e;
+  --color-blush-600: #9d5a66;
+  --color-blush-700: #824a55;
+  --color-blush-800: #6a3e47;
+  --color-blush-900: #57363d;
+
+  --color-lav-50: #f7f5fb;
+  --color-lav-100: #eeeaf7;
+  --color-lav-200: #ddd5ee;
+  --color-lav-300: #c5b9e2;
+  --color-lav-400: #a89ad1;
+  --color-lav-500: #8d7cbd;
+  --color-lav-600: #7563a3;
+  --color-lav-700: #615186;
+  --color-lav-800: #4f436d;
+  --color-lav-900: #42385c;
+
+  --color-mauve-50: #faf6f8;
+  --color-mauve-100: #f2e6ec;
+  --color-mauve-200: #e5ccd8;
+  --color-mauve-300: #d1aabd;
+  --color-mauve-400: #b5859e;
+  --color-mauve-500: #996780;
+  --color-mauve-600: #7e5368;
+  --color-mauve-700: #674454;
+
+  --color-lilac-50: #f6f6fb;
+  --color-lilac-100: #ebebf6;
+  --color-lilac-200: #d6d6ec;
+  --color-lilac-300: #b9b9de;
+  --color-lilac-400: #9898cb;
+  --color-lilac-500: #7b7bb4;
+  --color-lilac-600: #636398;
+  --color-lilac-700: #51517d;
+
+  --color-peri-50: #f5f6fc;
+  --color-peri-100: #e8ebf8;
+  --color-peri-200: #d2d8f1;
+  --color-peri-300: #b3bce7;
+  --color-peri-400: #8f9bd9;
+  --color-peri-500: #747fc8;
+  --color-peri-600: #5e66ae;
+  --color-peri-700: #4e548e;
+
+  --color-sage-50: #f5f8f5;
+  --color-sage-100: #e8efe9;
+  --color-sage-200: #d1e0d4;
+  --color-sage-300: #b0c9b5;
+  --color-sage-400: #8aad90;
+  --color-sage-500: #6d916f;
+  --color-sage-600: #577558;
+  --color-sage-700: #485f49;
+
+  --color-olive-50: #f7f7f2;
+  --color-olive-100: #ececd9;
+  --color-olive-200: #dcdcaf;
+  --color-olive-300: #c6c67f;
+  --color-olive-400: #abab5c;
+  --color-olive-500: #8f8f49;
+  --color-olive-600: #72723d;
+  --color-olive-700: #5d5d34;
+
+  --color-peach-50: #faf6f3;
+  --color-peach-100: #f5e9e3;
+  --color-peach-200: #ecd2c6;
+  --color-peach-300: #dfb1a0;
+  --color-peach-400: #cf8c74;
+  --color-peach-500: #bc6f55;
+  --color-peach-600: #a25942;
+  --color-peach-700: #864a37;
+
+  --color-clay-50: #f7f5f2;
+  --color-clay-100: #efe9e1;
+  --color-clay-200: #dfd3c3;
+  --color-clay-300: #c9b69e;
+  --color-clay-400: #ad9475;
+  --color-clay-500: #927856;
+  --color-clay-600: #786046;
+  --color-clay-700: #624e3a;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-paper);
+}
