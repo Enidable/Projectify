@@ -78,9 +78,9 @@ export default function Projects() {
         })}
       </div>
 
-      <ProjectModal open={showAdd} onClose={() => setShowAdd(false)} onSubmit={(data) => { addProject(data); setShowAdd(false) }} title="New Project" />
-      <ProjectModal open={!!editId} onClose={() => setEditId(null)} initial={state.projects.find(x => x.id === editId)} onSubmit={(data) => { updateProject(editId, data); setEditId(null) }} title="Edit Project" />
-      <MilestoneModal open={!!editMs} onClose={() => setEditMs(null)} initial={editMs?.milestone} onSubmit={(data) => {
+      <ProjectModal key={showAdd ? 'new' : 'closed'} open={showAdd} onClose={() => setShowAdd(false)} onSubmit={(data) => { addProject(data); setShowAdd(false) }} title="New Project" />
+      <ProjectModal key={editId || 'closed'} open={!!editId} onClose={() => setEditId(null)} initial={state.projects.find(x => x.id === editId)} onSubmit={(data) => { updateProject(editId, data); setEditId(null) }} title="Edit Project" />
+      <MilestoneModal key={editMs ? (editMs.milestone ? editMs.milestone.id : 'new') : 'closed'} open={!!editMs} onClose={() => setEditMs(null)} initial={editMs?.milestone} onSubmit={(data) => {
         const pid = editMs.projectId
         if (editMs.milestone) updateMilestone(pid, editMs.milestone.id, data)
         else addMilestone(pid, data)

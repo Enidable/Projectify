@@ -93,7 +93,7 @@ export default function Timeline() {
         </div>
       </div>
 
-      <DateModal project={state.projects.find(p => p.id === editId)} onClose={() => setEditId(null)} onSave={(id, patch) => { updateProject(id, patch); setEditId(null) }} />
+      <DateModal key={editId || 'closed'} project={state.projects.find(p => p.id === editId)} onClose={() => setEditId(null)} onSave={(id, patch) => { updateProject(id, patch); setEditId(null) }} />
     </div>
   )
 }
