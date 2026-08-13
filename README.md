@@ -1,8 +1,8 @@
 # 🧩 Projectify
 
-A customizable, gamified planner for projects, milestones, and days — built for neurodivergent brains that thrive on structure, energy-aware scheduling, and a bit of XP.
+A customizable, gamified planner for projects, milestones, and days built specifically for neurodivergent brains that thrive on structure, energy-aware scheduling, and a bit of XP 💅.
 
-**Projectify ≠ SummerQuest.** SummerQuest was a fixed 17-day summer snapshot; Projectify is the general, *editable* version: you create your own projects, checkpoints, and planned days entirely through the UI. No config files, no code diving.
+Projectify is the general, *editable* version of my SummerQuest Project Planner: you create your own projects, checkpoints, and planned days entirely through the UI. No config files, no code diving.
 
 ## Features
 
@@ -19,6 +19,8 @@ A customizable, gamified planner for projects, milestones, and days — built fo
 npm install
 npm run dev      # start the dev server
 ```
+
+Or via the browser using: https://enidable.github.io/Projectify/
 
 Build for production:
 
