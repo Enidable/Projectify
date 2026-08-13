@@ -4,9 +4,9 @@ export const APP_NAME = 'Projectify'
 
 // Color themes swap the app's accent palette (blush = primary, lav = secondary, lilac = tertiary).
 export const THEMES = [
-  { id: 'lilac', label: 'Lilac', blurb: 'Soft pink & purple', sample: ['#c95a6e', '#b29af3'] },
+  { id: 'cute vibe', label: 'Lilac', blurb: 'Soft pink & purple', sample: ['#bb4056', '#7556c9'] },
   { id: 'sunset', label: 'Sunset', blurb: 'Warm orange & terracotta', sample: ['#ffb938', '#ad4b20'] },
-  { id: 'ocean', label: 'Ocean', blurb: 'Calm blues & teals', sample: ['#3f88bd', '#031f7c'] },
+  { id: 'ocean', label: 'Ocean', blurb: 'Calm blues & teals', sample: ['#5cade4', '#031f7c'] },
   { id: 'forest', label: 'Forest', blurb: 'Deep greens & sage', sample: ['#6a8c4f', '#176641'] },
   { id: 'joa', label: 'Joa', blurb: 'Vibrant purple & snot-green', sample: ['#93c900', '#82009c'] },
 ]
