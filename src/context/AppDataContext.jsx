@@ -147,6 +147,40 @@ export function AppDataProvider({ children }) {
     })
   }, [])
 
+  const updateBlock = useCallback((date, blockId, patch) => {
+    setState(prev => {
+      const day = prev.calendar[date]
+      if (!day) return prev
+      return {
+        ...prev,
+        calendar: { ...prev.calendar, [date]: { ...day, blocks: (day.blocks || []).map(b => b.id === blockId ? { ...b, ...patch } : b) } },
+      }
+    })
+  }, [])
+
+  const moveBlock = useCallback((sourceDate, blockId, targetDate, targetIndex) => {
+    setState(prev => {
+      const srcDay = prev.calendar[sourceDate]
+      if (!srcDay) return prev
+      const block = (srcDay.blocks || []).find(b => b.id === blockId)
+      if (!block) return prev
+      const srcBlocks = (srcDay.blocks || []).filter(b => b.id !== blockId)
+      const tgtDay = prev.calendar[targetDate] || { note: '', ranges: [], blocks: [] }
+
+      if (sourceDate === targetDate) {
+        let idx = Math.max(0, Math.min(targetIndex, srcBlocks.length))
+        srcBlocks.splice(idx, 0, block)
+        return { ...prev, calendar: { ...prev.calendar, [targetDate]: { ...srcDay, blocks: srcBlocks } } }
+      }
+
+      const tgtBlocks = [...(tgtDay.blocks || [])]
+      tgtBlocks.splice(Math.max(0, Math.min(targetIndex, tgtBlocks.length)), 0, block)
+      const calendar = { ...prev.calendar, [sourceDate]: { ...srcDay, blocks: srcBlocks } }
+      calendar[targetDate] = { ...tgtDay, blocks: tgtBlocks }
+      return { ...prev, calendar }
+    })
+  }, [])
+
   // ---- Bulk ----------------------------------------------------------------
   const reset = useCallback(() => {
     setState(emptyState())
@@ -215,7 +249,7 @@ export function AppDataProvider({ children }) {
     state, derived, setTheme,
     addProject, updateProject, deleteProject,
     addMilestone, updateMilestone, deleteMilestone,
-    upsertDay, deleteDay, addBlock, deleteBlock, toggleBlockDone,
+    upsertDay, deleteDay, addBlock, deleteBlock, toggleBlockDone, updateBlock, moveBlock,
     reset, loadDemo, importState, exportState,
   }
 

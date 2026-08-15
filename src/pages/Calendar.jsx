@@ -7,10 +7,12 @@ import { projectColor } from '../utils/helpers'
 const FLAVOR_KEYS = Object.keys(FLAVORS)
 
 export default function Calendar() {
-  const { state, upsertDay, addBlock } = useAppData()
+  const { state, upsertDay, addBlock, updateBlock } = useAppData()
   const [showAdd, setShowAdd] = useState(false)
   const [addOnDate, setAddOnDate] = useState(null)
   const [settingsOnDate, setSettingsOnDate] = useState(null)
+  const [editBlock, setEditBlock] = useState(null)
+  const [drag, setDrag] = useState(null)
 
   const dates = useMemo(() => Object.keys(state.calendar).sort(), [state.calendar])
   const isToday = todayStr()
@@ -39,29 +41,81 @@ export default function Calendar() {
             isToday={date === isToday}
             onAdd={() => setAddOnDate(date)}
             onSettings={() => setSettingsOnDate(date)}
+            onEditBlock={(block) => setEditBlock({ date, block })}
+            drag={drag}
+            setDrag={setDrag}
           />
         ))}
       </div>
 
+      {drag && <p className="text-xs text-lav-700/50 italic">Drag to a spot on a day to reorder, or onto another day card to move it. Drop to place it.</p>}
+
       <AddDayModal open={showAdd} onClose={() => setShowAdd(false)} onSubmit={(date) => { upsertDay(date, { ranges: [...DEFAULT_RANGES], blocks: [] }); setShowAdd(false) }} />
       <AddBlockModal key={addOnDate || 'none'} date={addOnDate} onClose={() => setAddOnDate(null)} onSubmit={(date, block) => { addBlock(date, block); setAddOnDate(null) }} />
       <DaySettingsModal key={settingsOnDate || 'none'} date={settingsOnDate} onClose={() => setSettingsOnDate(null)} />
+      <EditBlockModal
+        key={(editBlock?.date || 'none') + (editBlock?.block?.id || '')}
+        date={editBlock?.date}
+        block={editBlock?.block}
+        onClose={() => setEditBlock(null)}
+        onSubmit={(block, patch) => { updateBlock(editBlock.date, block.id, patch); setEditBlock(null) }}
+      />
     </div>
   )
 }
 
-function DayCard({ date, isToday, onAdd, onSettings }) {
-  const { state, deleteBlock, toggleBlockDone, deleteDay } = useAppData()
+function DayCard({ date, isToday, onAdd, onSettings, onEditBlock, drag, setDrag }) {
+  const { state, deleteBlock, toggleBlockDone, deleteDay, upsertDay, moveBlock } = useAppData()
+  const [editingNote, setEditingNote] = useState(false)
+  const [noteDraft, setNoteDraft] = useState('')
+  const [overRow, setOverRow] = useState(null)
   const day = state.calendar[date]
   if (!day) return null
   const d = new Date(date + 'T12:00:00')
   const label = d.toLocaleDateString('en-GB', { weekday: 'short', day: 'numeric', month: 'short' })
-  const done = (day.blocks || []).filter(b => b.done).length
-  const total = (day.blocks || []).length
+  const blocks = day.blocks || []
+  const done = blocks.filter(b => b.done).length
+  const total = blocks.length
   const pct = total ? Math.round((done / total) * 100) : 0
 
+  function beginNoteEdit() {
+    setNoteDraft(day.note || '')
+    setEditingNote(true)
+  }
+
+  function saveNote() {
+    upsertDay(date, { note: noteDraft.trim() })
+    setEditingNote(false)
+  }
+
+  function handleDrop(e) {
+    e.preventDefault()
+    if (!drag) return
+    moveBlock(drag.fromDate, drag.blockId, date, blocks.length)
+    setDrag(null)
+  }
+
+  function handleBlockDrop(e, index) {
+    e.preventDefault()
+    e.stopPropagation()
+    if (!drag) return
+    if (drag.fromDate === date && drag.blockId === blocks[index]?.id) return
+    let target = index
+    if (drag.fromDate === date) {
+      const fromIndex = blocks.findIndex(b => b.id === drag.blockId)
+      if (fromIndex < target) target -= 1
+    }
+    moveBlock(drag.fromDate, drag.blockId, date, target)
+    setDrag(null)
+    setOverRow(null)
+  }
+
   return (
-    <div className={`bg-white rounded-xl border p-4 ${isToday ? 'border-lav-400 ring-2 ring-lav-200' : 'border-blush-100'}`}>
+    <div
+      className={`bg-white rounded-xl border p-4 ${isToday ? 'border-lav-400 ring-2 ring-lav-200' : 'border-blush-100'} ${drag ? 'ring-2 ring-blush-100' : ''}`}
+      onDragOver={e => { if (drag) { e.preventDefault(); e.dataTransfer.dropEffect = 'move' } }}
+      onDrop={handleDrop}
+    >
       <div className="flex items-center justify-between mb-2">
         <div>
           <span className="text-sm font-semibold text-lav-900">{label} {isToday && <span className="ml-1 text-[10px] px-2 py-0.5 rounded-full bg-lav-100 text-lav-700">TODAY</span>}</span>
@@ -76,35 +130,77 @@ function DayCard({ date, isToday, onAdd, onSettings }) {
         </div>
       </div>
 
-      {day.note && <p className="text-[11px] text-lav-700/50 bg-lav-50 rounded px-2 py-1 mb-2">{day.note}</p>}
-      {day.ranges && day.ranges.length > 0 && (
-        <p className="text-[10px] text-lav-700/40 mb-2">Free: {day.ranges.map(r => `${r.start}–${r.end}`).join(' · ')}</p>
+      <div className="flex items-start gap-1 mb-2">
+        {editingNote ? (
+          <input
+            value={noteDraft}
+            onChange={e => setNoteDraft(e.target.value)}
+            onBlur={saveNote}
+            onKeyDown={e => { if (e.key === 'Enter') saveNote(); if (e.key === 'Escape') setEditingNote(false) }}
+            autoFocus
+            placeholder="Day comment…"
+            className="flex-1 text-[11px] text-lav-900 bg-lav-50 rounded px-2 py-1 focus:outline-none focus:ring-2 focus:ring-lav-200"
+          />
+        ) : (
+          <p onClick={beginNoteEdit} className={`flex-1 text-[11px] rounded px-2 py-1 cursor-text hover:bg-lav-50 ${day.note ? 'bg-lav-50 text-lav-700/70' : 'bg-transparent text-lav-700/30 italic'}`}>
+            {day.note || 'Add a comment…'}
+          </p>
+        )}
+      </div>
+      {blocks.length > 0 && (
+        <>
+          {day.ranges && day.ranges.length > 0 && (
+            <p className="text-[10px] text-lav-700/40 mb-2">Free: {day.ranges.map(r => `${r.start}–${r.end}`).join(' · ')}</p>
+          )}
+          <div className="space-y-1.5">
+            {blocks.map((b, i) => {
+              const f = flavorInfo(b.flavor)
+              const proj = state.projects.find(p => p.id === b.projectId)
+              const c = proj ? projectColor(proj.color) : null
+              return (
+                <div
+                  key={b.id}
+                  draggable
+                  onDragStart={e => {
+                    e.stopPropagation()
+                    e.dataTransfer.effectAllowed = 'move'
+                    e.dataTransfer.setData('text/plain', b.id)
+                    setDrag({ blockId: b.id, fromDate: date })
+                  }}
+                  onDragEnd={() => { setDrag(null); setOverRow(null) }}
+                  onDragEnter={e => { e.preventDefault(); e.stopPropagation(); if (drag && drag.blockId !== b.id) setOverRow(i) }}
+                  onDragLeave={e => { e.preventDefault(); e.stopPropagation(); if (overRow === i) setOverRow(null) }}
+                  onDragOver={e => { if (drag) { e.preventDefault(); e.stopPropagation(); e.dataTransfer.dropEffect = 'move' } }}
+                  onDrop={e => handleBlockDrop(e, i)}
+                  className={`group flex items-center gap-2 text-xs border border-blush-50 rounded px-2 py-1.5 cursor-grab active:cursor-grabbing ${drag?.blockId === b.id ? 'opacity-40' : ''} ${overRow === i ? 'border-lav-400 bg-lav-50 ring-1 ring-lav-200' : ''}`}
+                  style={{ borderLeftColor: c ? c.hex : undefined, borderLeftWidth: c ? 3 : 0 }}
+                >
+                  <div className={`border-l-2 ${f.border} pl-1 flex items-center`}>
+                    <button
+                      draggable={false}
+                      onClick={() => toggleBlockDone(date, b.id)}
+                      className={`flex items-center justify-center w-4 h-4 rounded border-2 text-[9px] cursor-pointer ${b.done ? 'bg-sage-500 border-sage-500 text-white' : 'border-lav-300 text-transparent hover:border-lav-500'}`}>✓</button>
+                  </div>
+                  <span className="font-mono text-[10px] text-lav-700/40 w-9 shrink-0">{b.time}</span>
+                  <div className="flex-1 min-w-0">
+                    <p className={`truncate ${b.done ? 'line-through text-lav-700/40' : 'text-lav-900'}`}>{b.label || 'Untitled'}</p>
+                    {proj && <p className="text-[10px] text-lav-700/50 truncate">{proj.icon} {proj.name}</p>}
+                  </div>
+                  <span className={`px-1.5 py-0.5 rounded-full text-[9px] shrink-0 ${f.cls}`}>{f.label}</span>
+                  <button
+                    draggable={false}
+                    onClick={() => onEditBlock(b)}
+                    className="text-xs text-lav-700/40 opacity-0 group-hover:opacity-100 hover:text-lav-900 cursor-pointer shrink-0"
+                    title="Edit item">✏️</button>
+                  <span onClick={() => { if (confirm('Remove this item?')) deleteBlock(date, b.id) }} className="text-xs text-blush-400 opacity-0 group-hover:opacity-100 hover:text-blush-600 cursor-pointer shrink-0">×</span>
+                </div>
+              )
+            })}
+          </div>
+        </>
       )}
-
-      {(!day.blocks || day.blocks.length === 0) ? (
-        <p className="text-xs text-lav-700/40 italic py-2">Nothing scheduled. Click ＋ to add work.</p>
-      ) : (
-        <div className="space-y-1.5">
-          {day.blocks.map(b => {
-            const f = flavorInfo(b.flavor)
-            const proj = state.projects.find(p => p.id === b.projectId)
-            const c = proj ? projectColor(proj.color) : null
-            return (
-              <div key={b.id} className="group flex items-center gap-2 text-xs border border-blush-50 rounded px-2 py-1.5" style={{ borderLeftColor: c ? c.hex : undefined, borderLeftWidth: c ? 3 : 0 }}>
-                <div className={`border-l-2 ${f.border} pl-1`}>
-                  <button onClick={() => toggleBlockDone(date, b.id)} className={`flex items-center justify-center w-4 h-4 rounded border-2 text-[9px] cursor-pointer ${b.done ? 'bg-sage-500 border-sage-500 text-white' : 'border-lav-300 text-transparent hover:border-lav-500'}`}>✓</button>
-                </div>
-                <span className="font-mono text-[10px] text-lav-700/40 w-9 shrink-0">{b.time}</span>
-                <div className="flex-1 min-w-0">
-                  <p className={`truncate ${b.done ? 'line-through text-lav-700/40' : 'text-lav-900'}`}>{b.label || 'Untitled'}</p>
-                  {proj && <p className="text-[10px] text-lav-700/50 truncate">{proj.icon} {proj.name}</p>}
-                </div>
-                <span className={`px-1.5 py-0.5 rounded-full text-[9px] shrink-0 ${f.cls}`}>{f.label}</span>
-                <span onClick={() => { if (confirm('Remove this item?')) deleteBlock(date, b.id) }} className="text-xs text-blush-400 opacity-0 group-hover:opacity-100 hover:text-blush-600 cursor-pointer shrink-0">×</span>
-              </div>
-            )
-          })}
-        </div>
+      {blocks.length === 0 && (
+        <p className="text-xs text-lav-700/40 italic py-2">Nothing scheduled. Click ＋ to add work, or drop an item here from another day.</p>
       )}
     </div>
   )
@@ -196,6 +292,78 @@ function AddBlockModal({ date, onClose, onSubmit }) {
         <div className="flex justify-end gap-2">
           <button type="button" onClick={onClose} className="text-sm px-4 py-1.5 rounded-lg border border-blush-200 text-blush-700 hover:bg-blush-50 cursor-pointer">Cancel</button>
           <button type="submit" disabled={state.projects.length === 0} className="text-sm px-4 py-1.5 rounded-lg bg-blush-600 text-white hover:bg-blush-700 cursor-pointer disabled:opacity-40">Add</button>
+        </div>
+      </form>
+    </Modal>
+  )
+}
+
+function EditBlockModal({ date, block, onClose, onSubmit }) {
+  const { state } = useAppData()
+  const [form, setForm] = useState(() => ({
+    time: block?.time || '09:00',
+    projectId: block?.projectId || '',
+    milestoneId: block?.milestoneId || '',
+    flavor: block?.flavor || 'DEEP',
+    label: block?.label || '',
+  }))
+  const proj = state.projects.find(p => p.id === form.projectId)
+
+  function resetFor(projectId) {
+    setForm(f => ({ ...f, projectId, milestoneId: '' }))
+  }
+
+  function submit(e) {
+    e.preventDefault()
+    if (!block) return
+    const chosen = proj?.milestones.find(m => m.id === form.milestoneId)
+    onSubmit(block, {
+      time: form.time,
+      projectId: form.projectId || null,
+      milestoneId: form.milestoneId || null,
+      flavor: form.flavor,
+      label: form.label.trim() || chosen?.name || proj?.name || 'Untitled',
+    })
+  }
+
+  return (
+    <Modal open={!!date && !!block} onClose={onClose} title={date ? `Edit item — ${fmtShort(date)}` : ''}>
+      <form onSubmit={submit} className="space-y-3">
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className={labelCls}>Time</label>
+            <input type="time" className={inputCls} value={form.time} onChange={e => setForm(f => ({ ...f, time: e.target.value }))} />
+          </div>
+          <div>
+            <label className={labelCls}>Type</label>
+            <select className={inputCls} value={form.flavor} onChange={e => setForm(f => ({ ...f, flavor: e.target.value }))}>
+              {FLAVOR_KEYS.map(k => <option key={k} value={k}>{FLAVORS[k].label}</option>)}
+            </select>
+          </div>
+        </div>
+        <div>
+          <label className={labelCls}>Project</label>
+          <select className={inputCls} value={form.projectId} onChange={e => resetFor(e.target.value)}>
+            <option value="">— None —</option>
+            {state.projects.map(p => <option key={p.id} value={p.id}>{p.icon} {p.name}</option>)}
+          </select>
+        </div>
+        {proj && proj.milestones.length > 0 && (
+          <div>
+            <label className={labelCls}>Checkpoint</label>
+            <select className={inputCls} value={form.milestoneId} onChange={e => setForm(f => ({ ...f, milestoneId: e.target.value }))}>
+              <option value="">— General (whole project) —</option>
+              {proj.milestones.map(m => <option key={m.id} value={m.id}>{m.done ? '✓ ' : ''}{m.name}</option>)}
+            </select>
+          </div>
+        )}
+        <div>
+          <label className={labelCls}>Label</label>
+          <input className={inputCls} value={form.label} onChange={e => setForm(f => ({ ...f, label: e.target.value }))} placeholder="Defaults to checkpoint/project name" />
+        </div>
+        <div className="flex justify-end gap-2">
+          <button type="button" onClick={onClose} className="text-sm px-4 py-1.5 rounded-lg border border-blush-200 text-blush-700 hover:bg-blush-50 cursor-pointer">Cancel</button>
+          <button type="submit" className="text-sm px-4 py-1.5 rounded-lg bg-blush-600 text-white hover:bg-blush-700 cursor-pointer">Save</button>
         </div>
       </form>
     </Modal>
