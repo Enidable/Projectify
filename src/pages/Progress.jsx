@@ -1,8 +1,8 @@
 import { useMemo } from 'react'
 import { useAppData } from '../context/AppDataContext'
 import { levelTitle, progressToNext, configCurve, computeBadges, computeStreak, milestoneXp } from '../utils/helpers'
-import { fmtShort } from '../data/defaults'
-import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts'
+import { fmtShort, todayStr } from '../data/defaults'
+import { ComposedChart, Bar, Area, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 export default function Progress() {
   const { state, derived } = useAppData()
@@ -12,14 +12,60 @@ export default function Progress() {
   const streak = computeStreak(derived.dayWins)
   const earnedBadges = badges.filter(b => b.earned).length
 
-  const xpBreakdown = useMemo(() => {
-    let milestones = 0
+  // XP from completed milestones, broken out per project.
+  const milestoneBreakdown = useMemo(() => {
+    const perProject = []
+    let total = 0
     for (const p of state.projects) {
-      p.milestones.forEach((m, idx) => { if (m.done) milestones += milestoneXp(cfg, idx) })
+      let pxp = 0
+      p.milestones.forEach((m, idx) => { if (m.done) pxp += milestoneXp(cfg, idx) })
+      if (pxp > 0) perProject.push({ icon: p.icon, name: p.name, xp: pxp })
+      total += pxp
     }
-    const blocks = Math.max(0, derived.xp - milestones)
-    return { milestones, blocks, total: derived.xp }
-  }, [state.projects, cfg, derived.xp, derived.milestonesDone]) // milestonesDone to recalc when toggled
+    return { perProject, total }
+  }, [state.projects, cfg])
+
+  const blockXp = Math.max(0, derived.xp - milestoneBreakdown.total)
+
+  // Per-day XP earned, attributed to when you actually checked things off.
+  const journeyData = useMemo(() => {
+    const byDay = {} // date -> xp earned
+    const add = (date, amt) => {
+      if (!date) return
+      byDay[date] = (byDay[date] || 0) + amt
+    }
+
+    // Completed scheduled blocks: +4 XP each (except Rest/Work).
+    for (const [date, day] of Object.entries(state.calendar)) {
+      for (const b of day.blocks || []) {
+        if (b.done && b.flavor && b.flavor !== 'REST' && b.flavor !== 'WORK') {
+          add(b.completedAt || date, 4)
+        }
+      }
+    }
+
+    // Completed milestones: index-based XP. Attribute to completion date; fall back to a
+    // block that references it, else today (legacy data predates completion tracking).
+    for (const p of state.projects) {
+      p.milestones.forEach((m, idx) => {
+        if (!m.done) return
+        let when = m.completedAt
+        if (!when) {
+          for (const [date, day] of Object.entries(state.calendar)) {
+            if ((day.blocks || []).some(b => b.milestoneId === m.id)) { when = date; break }
+          }
+        }
+        add(when || todayStr(), milestoneXp(cfg, idx))
+      })
+    }
+
+    const dates = Object.keys(byDay).sort()
+    let cumulative = 0
+    return dates.map(date => {
+      cumulative += byDay[date]
+      return { date: fmtShort(date), gained: byDay[date], total: cumulative }
+    })
+  }, [state.calendar, state.projects, cfg])
 
   const curve = configCurve(cfg)
   const ladder = useMemo(() => {
@@ -30,18 +76,6 @@ export default function Progress() {
     }
     return rows
   }, [cfg, derived.level, curve])
-
-  const chartData = useMemo(() => {
-    const days = Object.keys(state.calendar).sort()
-    let xp = 0
-    return days.map(date => {
-      const day = state.calendar[date]
-      for (const b of day.blocks || []) {
-        if (b.done) xp += 4
-      }
-      return { date: fmtShort(date), xp }
-    })
-  }, [state.calendar])
 
   return (
     <div className="space-y-6">
@@ -67,15 +101,41 @@ export default function Progress() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl border border-blush-100 p-5">
-          <h2 className="font-semibold text-lav-900 mb-3">Where your XP comes from</h2>
-          <p className="text-xs text-lav-700/50 mb-3">{xpBreakdown.total} XP total</p>
-          <div className="space-y-3">
-            <BreakdownBar label="Milestones" value={xpBreakdown.milestones} total={xpBreakdown.total} color="#5d4fb8" />
-            <BreakdownBar label="Completed planned blocks" value={xpBreakdown.blocks} total={xpBreakdown.total} color="#2d948c" />
+          <h2 className="font-semibold text-lav-900 mb-1">Where your XP comes from</h2>
+          <p className="text-xs text-lav-700/50 mb-4">{derived.xp} XP total</p>
+          <div className="space-y-4">
+            <BreakdownBar
+              label="Milestones completed"
+              hint="Check off checkpoints in a project — XP grows with each one in a project."
+              value={milestoneBreakdown.total}
+              total={derived.xp}
+              color="#5d4fb8"
+            />
+            <BreakdownBar
+              label="Planned blocks done"
+              hint="Mark a scheduled block ✓ (+4 XP each). Rest & Work blocks don't count."
+              value={blockXp}
+              total={derived.xp}
+              color="#2d948c"
+            />
           </div>
+          {milestoneBreakdown.perProject.length > 0 && (
+            <div className="mt-4 pt-3 border-t border-blush-50">
+              <p className="text-[11px] text-lav-700/50 mb-1.5">Milestone XP by project</p>
+              <div className="space-y-1">
+                {milestoneBreakdown.perProject.map(pp => (
+                  <div key={pp.name} className="flex items-center justify-between text-xs">
+                    <span className="text-lav-700 truncate">{pp.icon} {pp.name}</span>
+                    <span className="text-lav-900 font-medium">{pp.xp} XP</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
           <div className="h-2 bg-lav-100 rounded-full overflow-hidden mt-4">
             <div className="h-full bg-gradient-to-r from-lav-500 to-peri-400 rounded-full transition-all" style={{ width: `${Math.min(100, prog.pct)}%` }} />
           </div>
+          <p className="text-[11px] text-lav-700/50 mt-1">{Math.round(prog.pct)}% of the way to the next level</p>
         </div>
 
         <div className="bg-white rounded-xl border border-blush-100 p-5">
@@ -95,23 +155,33 @@ export default function Progress() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="bg-white rounded-xl border border-blush-100 p-5">
-          <h2 className="font-semibold text-lav-900 mb-3">XP Journey</h2>
-          <div className="h-56">
-            <ResponsiveContainer width="100%" height="100%">
-              <AreaChart data={chartData}>
-                <defs>
-                  <linearGradient id="xpg" x1="0" y1="0" x2="0" y2="1">
-                    <stop offset="0%" stopColor="#8d7cbd" stopOpacity={0.4} />
-                    <stop offset="100%" stopColor="#8d7cbd" stopOpacity={0} />
-                  </linearGradient>
-                </defs>
-                <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#b8717e' }} tickLine={false} axisLine={false} />
-                <YAxis tick={{ fontSize: 10, fill: '#b8717e' }} tickLine={false} axisLine={false} width={34} />
-                <Tooltip />
-                <Area type="monotone" dataKey="xp" stroke="#8d7cbd" strokeWidth={2} fill="url(#xpg)" />
-              </AreaChart>
-            </ResponsiveContainer>
-          </div>
+          <h2 className="font-semibold text-lav-900 mb-1">XP Journey</h2>
+          <p className="text-xs text-lav-700/50 mb-3">XP earned on the day you actually checked something off — bars show that day's gain, the line is your running total.</p>
+          {journeyData.length === 0 ? (
+            <p className="text-sm text-lav-700/50 py-14 text-center">No XP yet — check off a milestone or a planned block and it'll show up here.</p>
+          ) : (
+            <div className="h-56">
+              <ResponsiveContainer width="100%" height="100%">
+                <ComposedChart data={journeyData}>
+                  <defs>
+                    <linearGradient id="xpg" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" stopColor="#8d7cbd" stopOpacity={0.4} />
+                      <stop offset="100%" stopColor="#8d7cbd" stopOpacity={0} />
+                    </linearGradient>
+                  </defs>
+                  <XAxis dataKey="date" tick={{ fontSize: 10, fill: '#b8717e' }} tickLine={false} axisLine={false} />
+                  <YAxis tick={{ fontSize: 10, fill: '#b8717e' }} tickLine={false} axisLine={false} width={34} />
+                  <Tooltip
+                    formatter={(value, name) => [name === 'gained' ? `${value} XP` : `${value} XP`, name === 'gained' ? 'Gained' : 'Total']}
+                    labelFormatter={label => `Day ${label}`}
+                  />
+                  <Legend wrapperStyle={{ fontSize: 11 }} />
+                  <Bar dataKey="gained" name="XP gained" fill="#bb4056" radius={[3, 3, 0, 0]} maxBarSize={26} />
+                  <Area type="monotone" dataKey="total" name="Running total" stroke="#8d7cbd" strokeWidth={2} fill="url(#xpg)" />
+                </ComposedChart>
+              </ResponsiveContainer>
+            </div>
+          )}
         </div>
 
         <div className="bg-white rounded-xl border border-blush-100 p-5">
@@ -131,15 +201,16 @@ export default function Progress() {
   )
 }
 
-function BreakdownBar({ label, value, total, color }) {
+function BreakdownBar({ label, hint, value, total, color }) {
   const pct = total ? Math.round((value / total) * 100) : 0
   return (
     <div>
-      <div className="flex items-center justify-between text-xs mb-1">
+      <div className="flex items-baseline justify-between text-xs mb-0.5">
         <span className="text-lav-700">{label}</span>
-        <span className="text-lav-900 font-medium">{value} XP <span className="text-lav-700/50">· {pct}%</span></span>
+        <span className="text-lav-900 font-medium shrink-0">{value} XP <span className="text-lav-700/50">· {pct}%</span></span>
       </div>
-      <div className="h-2 bg-lav-100 rounded-full overflow-hidden">
+      <p className="text-[10px] text-lav-700/40 mb-1">{hint}</p>
+      <div className="h-2.5 bg-lav-100 rounded-full overflow-hidden">
         <div className="h-full rounded-full" style={{ backgroundColor: color, width: `${pct}%` }} />
       </div>
     </div>

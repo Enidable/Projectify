@@ -1,5 +1,5 @@
 import { createContext, useContext, useMemo, useState, useEffect, useCallback } from 'react'
-import { emptyState, uid, DEFAULT_CONFIG, demoState } from '../data/defaults'
+import { emptyState, uid, DEFAULT_CONFIG, demoState, todayStr } from '../data/defaults'
 import { milestoneXp, levelForXp } from '../utils/helpers'
 
 const STORAGE_KEY = 'projectify_state_v1'
@@ -65,21 +65,35 @@ export function AppDataProvider({ children }) {
 
   // ---- Milestones ----------------------------------------------------------
   const addMilestone = useCallback((projectId, m) => {
+    const id = uid()
     setState(prev => ({
       ...prev,
       projects: prev.projects.map(p => p.id === projectId
-        ? { ...p, milestones: [...p.milestones, { id: uid(), done: false, ...m }] }
+        ? { ...p, milestones: [...p.milestones, { id, done: false, ...m }] }
         : p),
     }))
+    return id
   }, [])
 
   const updateMilestone = useCallback((projectId, milestoneId, patch) => {
-    setState(prev => ({
-      ...prev,
-      projects: prev.projects.map(p => p.id === projectId
-        ? { ...p, milestones: p.milestones.map(m => m.id === milestoneId ? { ...m, ...patch } : m) }
-        : p),
-    }))
+    setState(prev => {
+      const done = patch && 'done' in patch
+      const msPatch = done
+        ? { ...patch, completedAt: patch.done ? todayStr() : null }
+        : patch
+      const calendar = done ? Object.fromEntries(Object.entries(prev.calendar).map(([date, day]) => [
+        date, { ...day, blocks: (day.blocks || []).map(b => b.milestoneId === milestoneId
+          ? { ...b, done: !!patch.done, completedAt: patch.done ? todayStr() : null }
+          : b) },
+      ])) : prev.calendar
+      return {
+        ...prev,
+        calendar,
+        projects: prev.projects.map(p => p.id === projectId
+          ? { ...p, milestones: p.milestones.map(m => m.id === milestoneId ? { ...m, ...msPatch } : m) }
+          : p),
+      }
+    })
   }, [])
 
   const deleteMilestone = useCallback((projectId, milestoneId) => {
@@ -115,11 +129,12 @@ export function AppDataProvider({ children }) {
   const addBlock = useCallback((date, block) => {
     setState(prev => {
       const day = prev.calendar[date] || { note: '', ranges: [], blocks: [] }
+      const done = !!block.done
       return {
         ...prev,
         calendar: {
           ...prev.calendar,
-          [date]: { ...day, blocks: [...(day.blocks || []), { id: uid(), ...block }] },
+          [date]: { ...day, blocks: [...(day.blocks || []), { id: uid(), ...block, completedAt: done ? todayStr() : null }] },
         },
       }
     })
@@ -140,10 +155,18 @@ export function AppDataProvider({ children }) {
     setState(prev => {
       const day = prev.calendar[date]
       if (!day) return prev
-      return {
-        ...prev,
-        calendar: { ...prev.calendar, [date]: { ...day, blocks: (day.blocks || []).map(b => b.id === blockId ? { ...b, done: !b.done } : b) } },
-      }
+      const block = (day.blocks || []).find(b => b.id === blockId)
+      if (!block) return prev
+      const done = !block.done
+      const now = todayStr()
+      const calendar = { ...prev.calendar, [date]: { ...day, blocks: (day.blocks || []).map(b => b.id === blockId ? { ...b, done, completedAt: done ? now : null } : b) } }
+      const projects = block.milestoneId
+        ? prev.projects.map(p => ({
+            ...p,
+            milestones: p.milestones.map(m => m.id === block.milestoneId ? { ...m, done, completedAt: done ? now : null } : m),
+          }))
+        : prev.projects
+      return { ...prev, calendar, projects }
     })
   }, [])
 

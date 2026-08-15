@@ -227,12 +227,24 @@ function AddDayModal({ open, onClose, onSubmit }) {
 }
 
 function AddBlockModal({ date, onClose, onSubmit }) {
-  const { state } = useAppData()
+  const { state, addMilestone } = useAppData()
   const [form, setForm] = useState({ time: '09:00', projectId: state.projects[0]?.id || '', milestoneId: '', flavor: 'DEEP', label: '' })
+  const [newMs, setNewMs] = useState(false)
+  const [newMsName, setNewMsName] = useState('')
   const proj = state.projects.find(p => p.id === form.projectId)
 
   function resetFor(projectId) {
     setForm(f => ({ ...f, projectId, milestoneId: '' }))
+  }
+
+  function createMilestone(e) {
+    e.preventDefault()
+    const name = newMsName.trim()
+    if (!name || !proj) return
+    const id = addMilestone(proj.id, { name })
+    setForm(f => ({ ...f, milestoneId: id }))
+    setNewMs(false)
+    setNewMsName('')
   }
 
   function submit(e) {
@@ -274,13 +286,22 @@ function AddBlockModal({ date, onClose, onSubmit }) {
                 {state.projects.map(p => <option key={p.id} value={p.id}>{p.icon} {p.name}</option>)}
               </select>
             </div>
-            {proj && proj.milestones.length > 0 && (
+            {proj && (
               <div>
                 <label className={labelCls}>Checkpoint</label>
                 <select className={inputCls} value={form.milestoneId} onChange={e => setForm(f => ({ ...f, milestoneId: e.target.value }))}>
                   <option value="">— General (whole project) —</option>
                   {proj.milestones.map(m => <option key={m.id} value={m.id}>{m.done ? '✓ ' : ''}{m.name}</option>)}
                 </select>
+                {newMs ? (
+                  <div className="flex items-center gap-1.5 mt-1.5">
+                    <input autoFocus className={inputCls} value={newMsName} onChange={e => setNewMsName(e.target.value)} placeholder="Checkpoint name" onKeyDown={e => { if (e.key === 'Enter') createMilestone(e) }} />
+                    <button type="button" onClick={createMilestone} className="text-xs px-2.5 py-1.5 rounded-lg bg-lav-600 text-white hover:bg-lav-700 cursor-pointer shrink-0">Add</button>
+                    <button type="button" onClick={() => { setNewMs(false); setNewMsName('') }} className="text-xs px-2 py-1.5 rounded-lg text-lav-700/60 hover:text-lav-900 cursor-pointer shrink-0">Cancel</button>
+                  </div>
+                ) : (
+                  <button type="button" onClick={() => setNewMs(true)} className="mt-1.5 text-xs text-lav-700/60 hover:text-lav-900 cursor-pointer">＋ New checkpoint (also shows in Projects)</button>
+                )}
               </div>
             )}
             <div>
@@ -299,7 +320,7 @@ function AddBlockModal({ date, onClose, onSubmit }) {
 }
 
 function EditBlockModal({ date, block, onClose, onSubmit }) {
-  const { state } = useAppData()
+  const { state, addMilestone } = useAppData()
   const [form, setForm] = useState(() => ({
     time: block?.time || '09:00',
     projectId: block?.projectId || '',
@@ -307,10 +328,22 @@ function EditBlockModal({ date, block, onClose, onSubmit }) {
     flavor: block?.flavor || 'DEEP',
     label: block?.label || '',
   }))
+  const [newMs, setNewMs] = useState(false)
+  const [newMsName, setNewMsName] = useState('')
   const proj = state.projects.find(p => p.id === form.projectId)
 
   function resetFor(projectId) {
     setForm(f => ({ ...f, projectId, milestoneId: '' }))
+  }
+
+  function createMilestone(e) {
+    e.preventDefault()
+    const name = newMsName.trim()
+    if (!name || !proj) return
+    const id = addMilestone(proj.id, { name })
+    setForm(f => ({ ...f, milestoneId: id }))
+    setNewMs(false)
+    setNewMsName('')
   }
 
   function submit(e) {
@@ -348,13 +381,22 @@ function EditBlockModal({ date, block, onClose, onSubmit }) {
             {state.projects.map(p => <option key={p.id} value={p.id}>{p.icon} {p.name}</option>)}
           </select>
         </div>
-        {proj && proj.milestones.length > 0 && (
+        {proj && (
           <div>
             <label className={labelCls}>Checkpoint</label>
             <select className={inputCls} value={form.milestoneId} onChange={e => setForm(f => ({ ...f, milestoneId: e.target.value }))}>
               <option value="">— General (whole project) —</option>
               {proj.milestones.map(m => <option key={m.id} value={m.id}>{m.done ? '✓ ' : ''}{m.name}</option>)}
             </select>
+            {newMs ? (
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <input autoFocus className={inputCls} value={newMsName} onChange={e => setNewMsName(e.target.value)} placeholder="Checkpoint name" onKeyDown={e => { if (e.key === 'Enter') createMilestone(e) }} />
+                <button type="button" onClick={createMilestone} className="text-xs px-2.5 py-1.5 rounded-lg bg-lav-600 text-white hover:bg-lav-700 cursor-pointer shrink-0">Add</button>
+                <button type="button" onClick={() => { setNewMs(false); setNewMsName('') }} className="text-xs px-2 py-1.5 rounded-lg text-lav-700/60 hover:text-lav-900 cursor-pointer shrink-0">Cancel</button>
+              </div>
+            ) : (
+              <button type="button" onClick={() => setNewMs(true)} className="mt-1.5 text-xs text-lav-700/60 hover:text-lav-900 cursor-pointer">＋ New checkpoint (also shows in Projects)</button>
+            )}
           </div>
         )}
         <div>
