@@ -302,7 +302,7 @@
 }
 
 :root[data-theme="joa"] {
-  --color-paper: #80FF00;
+  --color-paper: #cfff82;
 
   /* Purple / Blush Scale (Anchored around #82009c) */
   --color-purple-50:  #fbf3fc;
